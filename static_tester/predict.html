@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/master.css">
+    <title>Digit Prediction</title>
+  </head>
+  <body>
+    <button type="button" name="button" onclick="upload()">Predict Img</button>
+    <div id="result"></div>
+    <input id="img-upload" name="img" type="file" hidden onchange="predict(this.files[0]);">
+  </body>
+  <script src="js/master.js" charset="utf-8"></script>
+</html>
