@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:3.8
 WORKDIR /code
 ENV DJANGO_APP app.py
 ENV DJANGO_RUN_HOST 0.0.0.0
