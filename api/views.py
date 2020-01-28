@@ -2,9 +2,6 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .forms import ImageForm
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.staticfiles import finders #added for image path
-from django.core.files import File
-from django.contrib.staticfiles.templatetags.staticfiles import static
 import base64
 import os.path
 
@@ -46,7 +43,6 @@ def load_digits(fn):
     IMG_HEIGHT = 28
     IMG_WIDTH = 28
     CLASS_N = 10 # 0-9
-    #print('loading "%s for training" ...' % fn)
     digits_img = cv2.imread(fn, 0)
     digits = split2d(digits_img, (DIGIT_WIDTH, DIGIT_HEIGHT))
     resized_digits = []
@@ -126,20 +122,16 @@ def proc_user_img(img_file, model):
     IMG_HEIGHT = 28
     IMG_WIDTH = 28
     CLASS_N = 10 # 0-9
-    #print('loading "%s for digit recognition" ...' % img_file)
     if img_file=="test_image.png":
         req = urllib.request.urlopen('https://perso.esiee.fr/~tranj/devops/test_image.png')
         arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
         im = cv2.imdecode(arr, -1)
-        print(im)
     elif img_file=="custom_train_digits.jpg":
         req = urllib.request.urlopen('https://perso.esiee.fr/~tranj/devops/custom_train_digits.jpg')
         arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
         im = cv2.imdecode(arr, -1)
     else :
-        #im=cv2.imdecode(base64.b64decode(img_file),-1) #cv2.imdecode(np.asarray(bytearray(img_file),dtype=np.uint8),-1)
-        im=img_file
-    #im = cv2.imread(img_file)    
+        im=img_file  
     blank_image = np.zeros((im.shape[0],im.shape[1],3), np.uint8)
     blank_image.fill(255)
 
@@ -161,7 +153,6 @@ def proc_user_img(img_file, model):
         cv2.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
         im_digit = imgray[y:y+h,x:x+w]
         im_digit = (255-im_digit)
-        #im_digit = imresize(im_digit,(IMG_WIDTH ,IMG_HEIGHT))
         im_digit=np.array(Image.fromarray(im_digit).resize((IMG_WIDTH, IMG_HEIGHT)))
 
         hog_img_data = pixels_to_hog_20([im_digit])  
@@ -192,7 +183,6 @@ def load_digits_custom(img_file):
     train_data = []
     train_target = []
     start_class = 1
-    #im = cv2.imread(img_file)
     if img_file=='custom_train_digits.jpg':
         req = urllib.request.urlopen('https://perso.esiee.fr/~tranj/devops/custom_train_digits.jpg')
         arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
@@ -227,10 +217,7 @@ def load_digits_custom(img_file):
         cv2.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
         im_digit = imgray[y:y+h,x:x+w]
         im_digit = (255-im_digit)
-        
-        #im_digit = imresize(im_digit,(IMG_WIDTH, IMG_HEIGHT))
         im_digit=np.array(Image.fromarray(im_digit).resize((IMG_WIDTH, IMG_HEIGHT)))
-        
         train_data.append(im_digit)
         train_target.append(start_class%10)
 
@@ -252,22 +239,14 @@ def predict(request):
 
     if (form := ImageForm(request.POST, request.FILES)).is_valid():
         img = form.cleaned_data['img']
-        #print(img.open().read())
         ####
         #------------------data preparation--------------------------------------------
         #PATH for training images
         TRAIN_MNIST_IMG = 'digits.png' 
         TRAIN_USER_IMG = 'custom_train_digits.jpg'
         TEST_USER_IMG = 'test_image.png'
-
-        #picture=cv2.imread(os.path.abspath('/home/ubuntu/devops/DevOps-DigitML/custom_train_digits.jpg'))
-        #print(os.path.abspath('/home/ubuntu/devops/DevOps-DigitML/custom_train_digits.jpg'))
-        req = urllib.request.urlopen('http://3.81.114.179/custom_train_digits.jpg')
-        arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
-        picture = cv2.imdecode(arr, -1)
-        print(picture.shape)
-	#COMMENTED FOR TESTS
-        digits, labels = load_digits_custom(TRAIN_USER_IMG) #my handwritten dataset (better than MNIST on my handwritten digits)
+	
+        digits, labels = load_digits_custom(TRAIN_USER_IMG) #handwritten dataset (better than MNIST on my handwritten digits)
 
         digits, labels = shuffle(digits, labels, random_state=256)
         train_digits_data = pixels_to_hog_20(digits)
@@ -288,35 +267,15 @@ def predict(request):
         model = SVM_MODEL(num_feats = train_digits_data.shape[1])
         model.train(X_train, y_train)
         preds = model.predict(X_test)
-        print('Accuracy: ',accuracy_score(y_test, preds))
+        #print('Accuracy: ',accuracy_score(y_test, preds))
 
         model = SVM_MODEL(num_feats = train_digits_data.shape[1])
         model.train(train_digits_data, labels)
-        print(type(proc_user_img(TEST_USER_IMG, model)))
-        print("+++")
 
 	#------------------------------------------------------------------------------
-        ####
-        
-        
-        
-        #return JsonResponse({
-        #    'status': 'success',
-        #    'data': base64.b64encode(img.open().read()).decode('utf8')
-        #})
-        #print(base64.b64encode(img.open().read()))
-        #predi=base64.b64encode(img.open().read()).decode('utf8')
 
-        #jpg_original = base64.b64decode(img.open().read())
-        #jpg_as_np = np.frombuffer(jpg_original, dtype=np.uint8)
-        #img_predi = cv2.imdecode(jpg_as_np, flags=1)
-        #cv2.imwrite('./0.jpg', img)
-        print(type(img.open().read()))
-        print("---")
-        #img=img_predi
         nparr = np.fromstring(img.open().read(), np.uint8)
         img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        print(img_np)
         img=img_np
  
         prediction_final=proc_user_img(img,model)
