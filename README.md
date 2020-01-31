@@ -33,14 +33,14 @@ As AWS's cost is time dependant, we decided not to maintain it all the time.
 
 The backend is coded using Python 3.8.
 At the moment, to predict the digits, we are using a model found here (https://github.com/pavitrakumar78/Python-Custom-Digit-Recognition)
-which either uses a SVM or a KNN. For now, the KNN part is activated for our application.  
+which either uses a SVM or a KNN.  
+For now, the KNN part is activated for our application.  
 We couldn't take it as it is and had to modify it to match with Django (updated libraries mainly).  
 We also first tried to use a keras/tensorflow model for the recognition but we encountered problems with Docker using it.
 
 ### Frontend
 
-We had multiple choices for our web framework and decided to go with Django as some team members already had some experience with it.  
-Different usual languages are used to code it (Javascript, CSS, HTML).
+We had multiple choices for our web framework and decided to go with Django as some team members already had some experience with it. Different usual languages are used to code it (Javascript, CSS, HTML).
 
 ## Instructions
 
@@ -52,7 +52,7 @@ Pay attention to the fact that the AWS instance is free until a certain amount o
 
 You will have to come back to AWS but for now, create a BuddyWorks account.  
 You will be asked to link your github repository (use ours for now).  
-Create your first pipeline, then add the various actions that we used by looking at our own BuddyWorks application.
+Create your first pipeline, then add the various actions that we used by looking at our own BuddyWorks application.  
 There is some tweaking involved so I encourage you to follow the link to ours and copy what we did.  
 If you want to get more information on how it is designed, read this link (https://buddy.works/guides/how-build-and-deploy-frontend-applications).  
 
@@ -92,64 +92,64 @@ security group for the instance -> actions -> modify entering rules -> add new -
 
 Installation Steps - Tested For Ubuntu 18.04LTS : 
 
-#init
-sudo apt-get update
-sudo apt-get upgrade
+#init  
+sudo apt-get update  
+sudo apt-get upgrade  
 
-#docker
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-sudo apt update
-apt-cache policy docker-ce
-sudo apt install docker-ce
+#docker  
+sudo apt install apt-transport-https ca-certificates curl software-properties-common  
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -  
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"  
+sudo apt update  
+apt-cache policy docker-ce  
+sudo apt install docker-ce  
 
-[optional]
-*check if docker installed*
-sudo systemctl status docker
+[optional]  
+*check if docker installed*  
+sudo systemctl status docker  
 
-#docker-compose
-sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+#docker-compose  
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose  
+sudo chmod +x /usr/local/bin/docker-compose  
 
-[optional]
-*check if docker-compose installed*
-docker-compose --version
+[optional]  
+*check if docker-compose installed*  
+docker-compose --version  
 
-#pip/pip3 
-sudo apt install python3-pip (for python3 ie pip3)
-(if python2 ie pip : sudo apt install python3-pip)
+#pip/pip3  
+sudo apt install python3-pip (for python3 ie pip3)  
+(if python2 ie pip : sudo apt install python3-pip)  
 
-[optional]
-*check if pip/pip3 installed*
-pip3 --version (for python3)
-(pip --version (for python2))
+[optional]  
+*check if pip/pip3 installed*  
+pip3 --version (for python3)  
+(pip --version (for python2))  
 
-#create folder for projet
-sudo mkdir devops
-cd devops
+#create folder for projet  
+sudo mkdir devops  
+cd devops  
 
-#git clone front & back end
-git clone https://github.com/AugPro/DevOps-DigitML
-git clone https://github.com/AugPro/DevOps-DigitML-front
+#git clone front & back end  
+git clone https://github.com/AugPro/DevOps-DigitML  
+git clone https://github.com/AugPro/DevOps-DigitML-front  
 
-#prepare environment back end
-cd DevOps-DigitML
+#prepare environment back end  
+cd DevOps-DigitML  
 
-#run server back-end
-sudo docker-compose build
-sudo docker-compose up -d
+#run server back-end  
+sudo docker-compose build  
+sudo docker-compose up -d  
 
-N.B. : 	The -d parameter will start the server and give you the control back
-	For test purposes you can simply execute : sudo docker-compose up
+N.B. : 	The -d parameter will start the server and give you the control back  
+	For test purposes you can simply execute : sudo docker-compose up  
 
-#Go back to previous repertory (../devops)
-cd ..
+#Go back to previous repertory (../devops)  
+cd ..  
 
-#prepare environment front-end
-cd DevOps-DigitML-front
-sudo docker-compose build
-sudo docker-compose up -d
+#prepare environment front-end  
+cd DevOps-DigitML-front  
+sudo docker-compose build  
+sudo docker-compose up -d  
 
 *Check on your favorite browser that you have access to the webpage/app using IP or DNS*
 
