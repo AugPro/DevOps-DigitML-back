@@ -60,14 +60,13 @@ In readURL(), just after 'reader.readAsDataURL(input.files[0]);'
 [In DevOps-DigitML-front/site/js/master.js]
 - Now, you need to check your instance IP on your browser.  
 
-For BuddyWorks, you shouldn't have to do anything except using the same steps as us :
+For deployment, you shouldn't have to do anything as BuddyWorks already does the following steps on every push to master :
 
-- Create a Lint Dockerfile action which will setup the Dockerfile.  
-??? - Build a Docker image  
-- Upload files to $ssh_host  
-- In the bash ($ssh_host), run the docker-compose command and restart the software application.  
+- Validate Dockerfile with lint.  
+- Upload files to [host](http://15.188.193.88/)
+- run docker-compose command to restart container.
 
-
+*Note: the major part of server conf is on [front](https://github.com/AugPro/DevOps-DigitML-front) repository*
 
 ## All links needed
 
